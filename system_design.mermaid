@@ -1,0 +1,20 @@
+graph TD
+    User[User] -->|Auth| Clerk[Clerk Authentication]
+    Clerk -->|Redirect| Dashboard[Dashboard]
+    
+    Dashboard -->|View Agencies| AgenciesPage[Agencies Page]
+    Dashboard -->|View Contacts| ContactsPage[Contacts Page]
+    
+    AgenciesPage -->|Fetch Data| ServerAction1[getAgencies]
+    ServerAction1 -->|Query| DB[(Database)]
+    
+    ContactsPage -->|Fetch Data| ServerAction2[getContacts]
+    ServerAction2 -->|Check Usage| UsageCheck{Usage < 50?}
+    
+    UsageCheck -->|Yes| FetchContacts[Fetch Contacts]
+    FetchContacts -->|Query| DB
+    FetchContacts -->|Increment Count| DB
+    FetchContacts -->|Return Data| ContactsPage
+    
+    UsageCheck -->|No| BlockAccess[Return Error]
+    BlockAccess -->|Show Paywall| ContactsPage
