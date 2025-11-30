@@ -266,6 +266,8 @@ export async function revealContact(contactId: string) {
 	}
 
 	// Increment usage and unlock contact
+	// NOTE: Disabled for Vercel demo as SQLite is read-only in serverless functions
+	/*
 	await prisma.$transaction([
 		prisma.userUsage.upsert({
 			where: {
@@ -292,7 +294,9 @@ export async function revealContact(contactId: string) {
 			},
 		}),
 	]);
+	*/
 
+	// Simulate successful unlock for demo purposes
 	return { contact };
 }
 
