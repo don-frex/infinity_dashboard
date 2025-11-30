@@ -34,14 +34,87 @@ export async function getAgencies({
 	return { agencies, total, totalPages: Math.ceil(total / limit) };
 }
 
-export async function getContacts({ page = 1, limit = 10 }: { page?: number; limit?: number }) {
+export async function getContacts({
+	page = 1,
+	limit = 50,
+	sortBy = 'name',
+	sortOrder = 'asc',
+}: {
+	page?: number;
+	limit?: number;
+	sortBy?: string;
+	sortOrder?: 'asc' | 'desc';
+}) {
 	const { userId } = await auth();
-
 	if (!userId) {
-		throw new Error('Unauthorized');
+		return { contacts: [], totalPages: 0 };
 	}
 
-	// Check usage limit
+	const validSortFields = ['name', 'title', 'department', 'agency'];
+	const safeSortBy = validSortFields.includes(sortBy) ? sortBy : 'name';
+
+	let orderBy: any = {};
+	if (safeSortBy === 'agency') {
+		orderBy = { agency: { name: sortOrder } };
+	} else {
+		orderBy = { [safeSortBy]: sortOrder };
+	}
+
+	const contacts = await prisma.contact.findMany({
+		skip: (page - 1) * limit,
+		take: limit,
+		include: {
+			agency: true,
+			unlockedBy: {
+				where: {
+					userId: userId,
+				},
+			},
+		},
+		orderBy: [
+			orderBy,
+			{ id: 'asc' },
+		],
+	});
+
+	const totalContacts = await prisma.contact.count();
+	const totalPages = Math.ceil(totalContacts / limit);
+
+	// Mask sensitive data by default, unless unlocked
+	const processedContacts = contacts.map((contact) => {
+		const isUnlocked = contact.unlockedBy.length > 0;
+		return {
+			...contact,
+			email: isUnlocked ? contact.email : '******',
+			phone: isUnlocked ? contact.phone : '******',
+		};
+	});
+
+	return { contacts: processedContacts, totalPages };
+}
+
+export async function revealContact(contactId: string) {
+	const { userId } = await auth();
+	if (!userId) throw new Error('Unauthorized');
+
+	// Check if already unlocked
+	const existingUnlock = await prisma.unlockedContact.findUnique({
+		where: {
+			userId_contactId: {
+				userId,
+				contactId,
+			},
+		},
+	});
+
+	const contact = await prisma.contact.findUnique({
+		where: { id: contactId },
+	});
+
+	if (existingUnlock) {
+		return { contact };
+	}
+
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
 
@@ -58,36 +131,52 @@ export async function getContacts({ page = 1, limit = 10 }: { page?: number; lim
 		return { error: 'LIMIT_REACHED' };
 	}
 
-	// Increment usage by the requested limit (cost of the operation)
-	await prisma.userUsage.upsert({
+	// Increment usage and unlock contact
+	await prisma.$transaction([
+		prisma.userUsage.upsert({
+			where: {
+				userId_date: {
+					userId,
+					date: today,
+				},
+			},
+			update: {
+				count: {
+					increment: 1,
+				},
+			},
+			create: {
+				userId,
+				date: today,
+				count: 1,
+			},
+		}),
+		prisma.unlockedContact.create({
+			data: {
+				userId,
+				contactId,
+			},
+		}),
+	]);
+
+	return { contact };
+}
+
+export async function getUserUsage() {
+	const { userId } = await auth();
+	if (!userId) return { count: 0 };
+
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+
+	const usage = await prisma.userUsage.findUnique({
 		where: {
 			userId_date: {
 				userId,
 				date: today,
 			},
 		},
-		update: {
-			count: {
-				increment: limit,
-			},
-		},
-		create: {
-			userId,
-			date: today,
-			count: limit,
-		},
 	});
 
-	const skip = (page - 1) * limit;
-	const [contacts, total] = await Promise.all([
-		prisma.contact.findMany({
-			skip,
-			take: limit,
-			include: { agency: true },
-			orderBy: { name: 'asc' },
-		}),
-		prisma.contact.count(),
-	]);
-
-	return { contacts, total, totalPages: Math.ceil(total / limit) };
+	return { count: usage?.count || 0 };
 }

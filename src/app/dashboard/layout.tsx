@@ -1,5 +1,6 @@
 import { Sidebar } from '@/components/Sidebar';
 import { UserButton } from '@clerk/nextjs';
+import { CreditDisplay } from '@/components/CreditDisplay';
 
 export default function DashboardLayout({
 	children,
@@ -16,6 +17,7 @@ export default function DashboardLayout({
 					<div className="w-full flex-1">
 						{/* Add breadcrumb or title here if needed */}
 					</div>
+					<CreditDisplay />
 					<UserButton />
 				</header>
 				<main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">

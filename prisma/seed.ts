@@ -64,25 +64,39 @@ async function main() {
 	console.log(`Found ${contacts.length} contacts to seed.`);
 
 	// Insert Contacts
+	// Create a fallback agency for orphaned contacts
+	const fallbackAgency = await prisma.agency.upsert({
+		where: { id: '00000000-0000-0000-0000-000000000000' },
+		update: {},
+		create: {
+			id: '00000000-0000-0000-0000-000000000000',
+			name: 'Unassigned Agency',
+			state: 'Unknown',
+			stateCode: 'UN',
+			type: 'Unknown',
+			population: 0,
+		},
+	});
+
 	for (const row of contacts as any[]) {
 		try {
 			// CSV: id,first_name,last_name,email,phone,title,email_type,contact_form_url,created_at,updated_at,agency_id,firm_id,department
 			// Model: id, name, email, phone, agencyId
 
-			// Only insert if agency exists
-			if (agencyMap.has(row.agency_id)) {
-				await prisma.contact.create({
-					data: {
-						id: row.id,
-						name: `${row.first_name} ${row.last_name}`,
-						email: row.email || '',
-						phone: row.phone || '',
-						agencyId: row.agency_id,
-					},
-				});
-			} else {
-				// console.warn(`Skipping contact ${row.id} because agency ${row.agency_id} not found.`);
-			}
+			const agencyId = agencyMap.has(row.agency_id) ? row.agency_id : fallbackAgency.id;
+			const name = `${row.first_name || ''} ${row.last_name || ''}`.trim() || 'Unknown';
+
+			await prisma.contact.create({
+				data: {
+					id: row.id,
+					name: name,
+					email: row.email || '',
+					phone: row.phone || '',
+					department: row.department?.trim() || 'Unknown',
+					title: row.title?.trim() || 'Unknown',
+					agencyId: agencyId,
+				},
+			});
 		} catch (e) {
 			console.error(`Failed to create contact ${row.id}:`, e);
 		}

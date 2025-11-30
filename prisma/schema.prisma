@@ -28,9 +28,22 @@ model Contact {
   name      String
   email     String
   phone     String
+  department String   @default("")
+  title     String   @default("")
   agencyId  String
   agency    Agency   @relation(fields: [agencyId], references: [id])
   createdAt DateTime @default(now())
+  unlockedBy UnlockedContact[]
+}
+
+model UnlockedContact {
+  id        String   @id @default(uuid())
+  userId    String
+  contactId String
+  contact   Contact  @relation(fields: [contactId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, contactId])
 }
 
 model UserUsage {
