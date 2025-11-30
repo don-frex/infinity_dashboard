@@ -22,7 +22,7 @@ export function StatsCards({
 		},
 		{
 			name: 'Total Contacts',
-			value: totalContacts.toLocaleString(),
+			value: totalContacts.toLocaleString() + '+',
 			subtext: 'Employee Contacts',
 			icon: Users,
 			color: 'text-yellow-600',

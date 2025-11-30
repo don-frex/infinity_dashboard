@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Building2, Users, LayoutDashboard, History, Settings, FileText, Mail } from 'lucide-react';
+import { Building2, Users, LayoutDashboard, History, Settings, FileText, Mail, CreditCard } from 'lucide-react';
 import { UserButton, useUser } from '@clerk/nextjs';
 
 const navItems = [
@@ -61,12 +61,18 @@ export function Sidebar() {
 				{/* Secondary Nav (Visual only to match prototype density) */}
 				<div className="mt-8">
 					<nav className="space-y-1">
-						<div className={cn(
-							'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground cursor-not-allowed opacity-70'
-						)}>
-							<FileText className="h-5 w-5 text-muted-foreground" />
-							Invoices
-						</div>
+						<Link
+							href="/dashboard/plans"
+							className={cn(
+								'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all',
+								pathname === '/dashboard/plans'
+									? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm'
+									: 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground'
+							)}
+						>
+							<CreditCard className="h-5 w-5 text-muted-foreground" />
+							Plans Available
+						</Link>
 						<div className={cn(
 							'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground cursor-not-allowed opacity-70'
 						)}>
