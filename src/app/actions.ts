@@ -204,17 +204,17 @@ export async function getDashboardStats() {
 
 	const avgEmployees = totalAgencies > 0 ? Math.round(totalContacts / totalAgencies) : 0;
 
-	const formattedDepartmentData = departmentData.map((d) => ({
+	const formattedDepartmentData = departmentData.map((d: any) => ({
 		name: d.department || 'Unknown',
 		value: d._count.department,
 	}));
 
-	const formattedTopAgencies = topAgencies.map((a) => ({
+	const formattedTopAgencies = topAgencies.map((a: any) => ({
 		name: a.name,
 		employees: a._count.contacts,
 	}));
 
-	const formattedMapData = mapDataRaw.map((m) => ({
+	const formattedMapData = mapDataRaw.map((m: any) => ({
 		name: m.state,
 		value: m._count.state,
 	}));
