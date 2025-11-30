@@ -152,7 +152,7 @@ export async function getRecentContacts({
 		prisma.unlockedContact.count({ where: { userId } }),
 	]);
 
-	const contacts = unlockedContacts.map((uc) => uc.contact);
+	const contacts = unlockedContacts.map((uc: any) => uc.contact);
 
 	return { contacts, totalPages: Math.ceil(total / limit) };
 }
