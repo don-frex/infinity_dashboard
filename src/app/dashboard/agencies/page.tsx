@@ -11,19 +11,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Search } from '@/components/Search';
 
 export default async function AgenciesPage({
 	searchParams,
 }: {
-	searchParams: Promise<{ page?: string; sortBy?: string; sortOrder?: 'asc' | 'desc' }>;
+	searchParams: Promise<{ page?: string; sortBy?: string; sortOrder?: 'asc' | 'desc'; query?: string }>;
 }) {
 	const params = await searchParams;
 	const page = Number(params.page) || 1;
 	const sortBy = params.sortBy || 'name';
 	const sortOrder = params.sortOrder || 'asc';
+	const query = params.query || '';
 	const limit = 50;
 
-	const { agencies, totalPages } = await getAgencies({ page, limit, sortBy, sortOrder });
+	const { agencies, totalPages } = await getAgencies({ page, limit, sortBy, sortOrder, query });
 
 	const SortableHeader = ({ label, field, className }: { label: string; field: string; className?: string }) => {
 		const isActive = sortBy === field;
@@ -32,7 +34,7 @@ export default async function AgenciesPage({
 		return (
 			<TableHead className={className}>
 				<Link
-					href={`/dashboard/agencies?page=1&sortBy=${field}&sortOrder=${nextOrder}`}
+					href={`/dashboard/agencies?page=1&sortBy=${field}&sortOrder=${nextOrder}&query=${query}`}
 					className="flex items-center gap-1 hover:text-foreground"
 				>
 					{label}
@@ -49,7 +51,10 @@ export default async function AgenciesPage({
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Agencies</CardTitle>
+				<div className="flex items-center justify-between">
+					<CardTitle>Agencies</CardTitle>
+					<Search placeholder="Search agencies..." />
+				</div>
 			</CardHeader>
 			<CardContent>
 				<Table>
@@ -97,7 +102,7 @@ export default async function AgenciesPage({
 						disabled={page <= 1}
 						asChild
 					>
-						<Link href={`/dashboard/agencies?page=${page - 1}&sortBy=${sortBy}&sortOrder=${sortOrder}`}>Previous</Link>
+						<Link href={`/dashboard/agencies?page=${page - 1}&sortBy=${sortBy}&sortOrder=${sortOrder}&query=${query}`}>Previous</Link>
 					</Button>
 					<div className="text-sm text-muted-foreground">
 						Page {page} of {totalPages}
@@ -108,7 +113,7 @@ export default async function AgenciesPage({
 						disabled={page >= totalPages}
 						asChild
 					>
-						<Link href={`/dashboard/agencies?page=${page + 1}&sortBy=${sortBy}&sortOrder=${sortOrder}`}>Next</Link>
+						<Link href={`/dashboard/agencies?page=${page + 1}&sortBy=${sortBy}&sortOrder=${sortOrder}&query=${query}`}>Next</Link>
 					</Button>
 				</div>
 			</CardContent>

@@ -30,10 +30,12 @@ export function ContactsTable({
 	contacts: initialContacts,
 	sortBy,
 	sortOrder,
+	query,
 }: {
 	contacts: Contact[];
 	sortBy: string;
 	sortOrder: 'asc' | 'desc';
+	query: string;
 }) {
 	const [contacts, setContacts] = useState(initialContacts);
 
@@ -73,7 +75,7 @@ export function ContactsTable({
 		return (
 			<TableHead className={className}>
 				<Link
-					href={`/dashboard/contacts?page=1&sortBy=${field}&sortOrder=${nextOrder}`}
+					href={`/dashboard/contacts?page=1&sortBy=${field}&sortOrder=${nextOrder}&query=${query}`}
 					className="flex items-center gap-1 hover:text-foreground"
 				>
 					{label}
@@ -92,8 +94,8 @@ export function ContactsTable({
 			<TableHeader>
 				<TableRow>
 					<SortableHeader label="Name" field="name" className="w-[250px]" />
-					<SortableHeader label="Title" field="title" className="w-[250px]" />
-					<SortableHeader label="Department" field="department" className="w-[250px]" />
+					<TableHead className="w-[250px]">Title</TableHead>
+					<TableHead className="w-[250px]">Department</TableHead>
 					<TableHead className="w-[200px]">Email</TableHead>
 					<TableHead className="w-[150px]">Phone</TableHead>
 					<TableHead className="w-[100px]">Action</TableHead>

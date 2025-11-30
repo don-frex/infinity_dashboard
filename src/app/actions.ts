@@ -10,11 +10,13 @@ export async function getAgencies({
 	limit = 10,
 	sortBy = 'name',
 	sortOrder = 'asc',
+	query = '',
 }: {
 	page?: number;
 	limit?: number;
 	sortBy?: string;
 	sortOrder?: 'asc' | 'desc';
+	query?: string;
 }) {
 	const skip = (page - 1) * limit;
 
@@ -22,13 +24,24 @@ export async function getAgencies({
 	const validSortFields = ['name', 'state', 'stateCode', 'type', 'population'];
 	const orderByField = validSortFields.includes(sortBy) ? sortBy : 'name';
 
+	const where: any = {};
+	if (query) {
+		where.OR = [
+			{ name: { contains: query } },
+			{ state: { contains: query } },
+			{ stateCode: { contains: query } },
+			{ type: { contains: query } },
+		];
+	}
+
 	const [agencies, total] = await Promise.all([
 		prisma.agency.findMany({
 			skip,
 			take: limit,
+			where,
 			orderBy: { [orderByField]: sortOrder },
 		}),
-		prisma.agency.count(),
+		prisma.agency.count({ where }),
 	]);
 
 	return { agencies, total, totalPages: Math.ceil(total / limit) };
@@ -39,11 +52,13 @@ export async function getContacts({
 	limit = 50,
 	sortBy = 'name',
 	sortOrder = 'asc',
+	query = '',
 }: {
 	page?: number;
 	limit?: number;
 	sortBy?: string;
 	sortOrder?: 'asc' | 'desc';
+	query?: string;
 }) {
 	const { userId } = await auth();
 	if (!userId) {
@@ -60,9 +75,20 @@ export async function getContacts({
 		orderBy = { [safeSortBy]: sortOrder };
 	}
 
+	const where: any = {};
+	if (query) {
+		where.OR = [
+			{ name: { contains: query } },
+			{ title: { contains: query } },
+			{ department: { contains: query } },
+			{ agency: { name: { contains: query } } },
+		];
+	}
+
 	const contacts = await prisma.contact.findMany({
 		skip: (page - 1) * limit,
 		take: limit,
+		where,
 		include: {
 			agency: true,
 			unlockedBy: {
@@ -77,7 +103,7 @@ export async function getContacts({
 		],
 	});
 
-	const totalContacts = await prisma.contact.count();
+	const totalContacts = await prisma.contact.count({ where });
 	const totalPages = Math.ceil(totalContacts / limit);
 
 	// Mask sensitive data by default, unless unlocked
@@ -87,6 +113,8 @@ export async function getContacts({
 			...contact,
 			email: isUnlocked ? contact.email : '******',
 			phone: isUnlocked ? contact.phone : '******',
+			title: isUnlocked ? contact.title : '******',
+			department: isUnlocked ? contact.department : '******',
 		};
 	});
 
