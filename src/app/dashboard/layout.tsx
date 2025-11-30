@@ -1,6 +1,7 @@
 import { Sidebar } from '@/components/Sidebar';
 import { UserButton } from '@clerk/nextjs';
 import { CreditDisplay } from '@/components/CreditDisplay';
+import { MobileSidebar } from '@/components/MobileSidebar';
 
 export default function DashboardLayout({
 	children,
@@ -9,11 +10,12 @@ export default function DashboardLayout({
 }) {
 	return (
 		<div className="grid h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] overflow-hidden">
-			<div className="hidden border-r bg-muted/40 md:block h-full overflow-y-auto">
+			<div className="hidden border-r md:block h-full overflow-y-auto">
 				<Sidebar />
 			</div>
 			<div className="flex flex-col h-full overflow-hidden">
 				<header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 flex-shrink-0">
+					<MobileSidebar />
 					<div className="w-full flex-1">
 						{/* Add breadcrumb or title here if needed */}
 					</div>

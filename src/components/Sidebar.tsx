@@ -22,7 +22,7 @@ export function Sidebar() {
 	const { user } = useUser();
 
 	return (
-		<div className="flex h-full w-64 flex-col border-r bg-sidebar text-sidebar-foreground">
+		<div className="flex h-full w-full flex-col border-r bg-sidebar text-sidebar-foreground">
 			{/* Logo Section */}
 			<div className="flex h-20 items-center px-6">
 				<Link href="/" className="flex items-center gap-3 font-bold text-xl tracking-tight">

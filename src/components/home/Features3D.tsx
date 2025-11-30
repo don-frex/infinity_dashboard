@@ -7,13 +7,13 @@ import { Dashboard3D } from './Dashboard3D';
 const features = [
 	{
 		title: 'Immersive Dashboard',
-		description: 'Experience data like never before with our 3D-accelerated interface.',
+		description: 'Experience data like never before with our accelerated interface.',
 		image: '/assets/feature-dashboard-green.png',
 		align: 'left',
 	},
 	{
 		title: 'Holographic Contacts',
-		description: 'Visualize your network in a stunning 3D space. Connect deeper.',
+		description: 'Visualize your network in a stunning space. Connect deeper.',
 		image: '/assets/feature-contacts.png',
 		align: 'right',
 	},

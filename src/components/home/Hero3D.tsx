@@ -51,7 +51,7 @@ export function Hero3D({ isSignedIn }: { isSignedIn: boolean }) {
 						<span
 							className="bg-clip-text text-transparent"
 							style={{
-								backgroundImage: 'linear-gradient(to right, lab(100 0 0), lab(78 6.05 79.14), lab(76 -0.66 -1.58))'
+								backgroundImage: 'linear-gradient(to right, lab(100 0 0), lab(100 0 0), lab(76 -0.66 -1.58))'
 							}}
 						>
 							INFINITY
