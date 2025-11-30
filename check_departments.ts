@@ -17,7 +17,7 @@ async function main() {
 	});
 
 	console.log('Top Departments:');
-	departments.forEach((d) => {
+	departments.forEach((d: any) => {
 		console.log(`${d.department || 'NULL'}: ${d._count.department}`);
 	});
 }
