@@ -5,13 +5,28 @@ import { auth } from '@clerk/nextjs/server';
 
 const prisma = new PrismaClient();
 
-export async function getAgencies({ page = 1, limit = 10 }: { page?: number; limit?: number }) {
+export async function getAgencies({
+	page = 1,
+	limit = 10,
+	sortBy = 'name',
+	sortOrder = 'asc',
+}: {
+	page?: number;
+	limit?: number;
+	sortBy?: string;
+	sortOrder?: 'asc' | 'desc';
+}) {
 	const skip = (page - 1) * limit;
+
+	// Validate sortBy field to prevent injection or errors
+	const validSortFields = ['name', 'state', 'stateCode', 'type', 'population'];
+	const orderByField = validSortFields.includes(sortBy) ? sortBy : 'name';
+
 	const [agencies, total] = await Promise.all([
 		prisma.agency.findMany({
 			skip,
 			take: limit,
-			orderBy: { name: 'asc' },
+			orderBy: { [orderByField]: sortOrder },
 		}),
 		prisma.agency.count(),
 	]);

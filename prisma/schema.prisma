@@ -13,8 +13,12 @@ datasource db {
 model Agency {
   id        String    @id @default(uuid())
   name      String
-  city      String    @default("") // Default to empty string if not present in CSV or handle in seed
+  city      String    @default("")
   state     String    @default("")
+  stateCode String    @default("")
+  type      String    @default("")
+  population Int      @default(0)
+  website   String    @default("")
   createdAt DateTime  @default(now())
   contacts  Contact[]
 }

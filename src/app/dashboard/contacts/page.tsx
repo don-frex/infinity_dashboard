@@ -10,9 +10,17 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Lock } from 'lucide-react';
+import Link from 'next/link';
 
-export default async function ContactsPage() {
-	const result = await getContacts({ page: 1, limit: 50 });
+export default async function ContactsPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ page?: string }>;
+}) {
+	const params = await searchParams;
+	const page = Number(params.page) || 1;
+	const limit = 50;
+	const result = await getContacts({ page, limit });
 
 	if ('error' in result && result.error === 'LIMIT_REACHED') {
 		return (
@@ -34,7 +42,7 @@ export default async function ContactsPage() {
 		return <div>Error loading contacts</div>;
 	}
 
-	const { contacts } = result;
+	const { contacts, totalPages } = result;
 
 	return (
 		<Card>
@@ -62,6 +70,28 @@ export default async function ContactsPage() {
 						))}
 					</TableBody>
 				</Table>
+
+				<div className="flex items-center justify-end space-x-2 py-4">
+					<Button
+						variant="outline"
+						size="sm"
+						disabled={page <= 1}
+						asChild
+					>
+						<Link href={`/dashboard/contacts?page=${page - 1}`}>Previous</Link>
+					</Button>
+					<div className="text-sm text-muted-foreground">
+						Page {page} of {totalPages}
+					</div>
+					<Button
+						variant="outline"
+						size="sm"
+						disabled={page >= totalPages}
+						asChild
+					>
+						<Link href={`/dashboard/contacts?page=${page + 1}`}>Next</Link>
+					</Button>
+				</div>
 			</CardContent>
 		</Card>
 	);

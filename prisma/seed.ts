@@ -40,6 +40,10 @@ async function main() {
 					id: row.id,
 					name: row.name,
 					state: row.state || '',
+					stateCode: row.state_code || '',
+					type: row.type || '',
+					population: parseInt(row.population) || 0,
+					website: row.website || '',
 					city: '', // CSV doesn't have a clear city column in the snippet
 				},
 			});
