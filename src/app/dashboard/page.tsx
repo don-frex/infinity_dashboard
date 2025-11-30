@@ -1,7 +1,11 @@
 import { DashboardStats } from '@/components/DashboardStats';
-import { getDashboardStats } from '@/app/actions';
+import { getDashboardStats, getRecentContacts } from '@/app/actions';
 
 export default async function DashboardPage() {
-	const stats = await getDashboardStats();
-	return <DashboardStats {...stats} />;
+	const [stats, recentData] = await Promise.all([
+		getDashboardStats(),
+		getRecentContacts({ limit: 5 }),
+	]);
+
+	return <DashboardStats {...stats} recentContacts={recentData.contacts} />;
 }

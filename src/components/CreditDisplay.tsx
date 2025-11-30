@@ -26,9 +26,25 @@ export function CreditDisplay() {
 	if (usage === null) return null;
 
 	return (
-		<div className="mr-4 text-sm font-medium">
-			Credits Used: {usage}/50
-			<button className="ml-2 text-blue-500 hover:underline" onClick={() => window.location.href = '/dashboard/plans'}>Free Plan</button>
+		<div className="mr-4 flex items-center gap-3">
+			<div className="flex flex-col gap-1 w-32">
+				<div className="flex justify-between text-xs font-medium text-muted-foreground">
+					<span>Credits</span>
+					<span>{usage}/50</span>
+				</div>
+				<div className="h-2 w-full rounded-full bg-secondary">
+					<div
+						className="h-full rounded-full bg-primary transition-all duration-500"
+						style={{ width: `${Math.min((usage / 50) * 100, 100)}%` }}
+					/>
+				</div>
+			</div>
+			<button
+				className="text-xs font-medium text-primary hover:underline"
+				onClick={() => window.location.href = '/dashboard/plans'}
+			>
+				Free Plan
+			</button>
 		</div>
 	);
 }
