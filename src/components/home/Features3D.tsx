@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { Dashboard3D } from './Dashboard3D';
 
 const features = [
 	{
@@ -34,16 +35,22 @@ export function Features3D() {
 							transition={{ duration: 0.8 }}
 							className="flex-1"
 						>
-							<div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-sm group">
-								{/* Green tint overlay for all images, stronger for contacts to kill blue */}
-								<div className={`absolute inset-0 z-10 bg-[#4CAF50] mix-blend-color ${feature.image.includes('contacts') ? 'opacity-60' : 'opacity-20'} transition-opacity duration-500`} />
-								<div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-orange-500/10 opacity-0 transition-opacity group-hover:opacity-100" />
-								<Image
-									src={feature.image}
-									alt={feature.title}
-									fill
-									className={`object-cover transition-transform duration-700 group-hover:scale-105 ${feature.image.includes('contacts') ? 'hue-rotate-[-100deg] saturate-150 contrast-125' : ''}`}
-								/>
+							<div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-sm group perspective-1000">
+								{feature.title === 'Immersive Dashboard' ? (
+									<Dashboard3D />
+								) : (
+									<>
+										{/* Green tint overlay for all images, stronger for contacts to kill blue */}
+										<div className={`absolute inset-0 z-10 bg-[#4CAF50] mix-blend-color ${feature.image.includes('contacts') ? 'opacity-60' : 'opacity-40'} transition-opacity duration-500`} />
+										<div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-orange-500/10 opacity-0 transition-opacity group-hover:opacity-100" />
+										<Image
+											src={feature.image}
+											alt={feature.title}
+											fill
+											className={`object-cover transition-transform duration-700 group-hover:scale-105 group-hover:rotate-y-12 ${feature.image.includes('contacts') ? 'hue-rotate-[-100deg] saturate-150 contrast-125' : 'hue-rotate-[-100deg] saturate-150 contrast-125'}`}
+										/>
+									</>
+								)}
 							</div>
 						</motion.div>
 						<motion.div

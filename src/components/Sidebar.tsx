@@ -26,7 +26,7 @@ export function Sidebar() {
 			{/* Logo Section */}
 			<div className="flex h-20 items-center px-6">
 				<Link href="/" className="flex items-center gap-3 font-bold text-xl tracking-tight">
-					<Logo />
+					<Logo variant="dark" />
 				</Link>
 			</div>
 

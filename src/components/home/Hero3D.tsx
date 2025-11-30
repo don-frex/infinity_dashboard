@@ -47,10 +47,16 @@ export function Hero3D({ isSignedIn }: { isSignedIn: boolean }) {
 					transition={{ duration: 0.8, ease: "easeOut" }}
 					className="max-w-4xl"
 				>
-					<h1 className="bg-gradient-to-r from-green-400 via-gray-200 to-green-600 bg-clip-text text-6xl font-extrabold text-transparent sm:text-8xl md:text-9xl tracking-tighter filter drop-shadow-lg">
-						INFINITY
-					</h1>
-					<p className="mt-6 text-xl text-gray-300 sm:text-2xl font-light tracking-wide">
+					<h1 className="text-7xl font-bold tracking-tighter sm:text-9xl md:text-[12rem] lg:text-[14rem]">
+						<span
+							className="bg-clip-text text-transparent"
+							style={{
+								backgroundImage: 'linear-gradient(to right, lab(100 0 0), lab(78 6.05 79.14), lab(76 -0.66 -1.58))'
+							}}
+						>
+							INFINITY
+						</span>
+					</h1>	<p className="mt-6 text-xl text-gray-300 sm:text-2xl font-light tracking-wide">
 						The Future of Agency Management is Here.
 					</p>
 				</motion.div>
