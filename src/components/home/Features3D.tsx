@@ -7,7 +7,7 @@ const features = [
 	{
 		title: 'Immersive Dashboard',
 		description: 'Experience data like never before with our 3D-accelerated interface.',
-		image: '/assets/feature-dashboard.png',
+		image: '/assets/feature-dashboard-green.png',
 		align: 'left',
 	},
 	{
@@ -35,13 +35,14 @@ export function Features3D() {
 							className="flex-1"
 						>
 							<div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-sm group">
-								<div className="absolute inset-0 z-10 bg-[#4CAF50] mix-blend-color opacity-40 transition-opacity duration-500 group-hover:opacity-60" />
-								<div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-blue-500/10 opacity-0 transition-opacity group-hover:opacity-100" />
+								{/* Green tint overlay for all images, stronger for contacts to kill blue */}
+								<div className={`absolute inset-0 z-10 bg-[#4CAF50] mix-blend-color ${feature.image.includes('contacts') ? 'opacity-60' : 'opacity-20'} transition-opacity duration-500`} />
+								<div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-orange-500/10 opacity-0 transition-opacity group-hover:opacity-100" />
 								<Image
 									src={feature.image}
 									alt={feature.title}
 									fill
-									className="object-cover transition-transform duration-700 group-hover:scale-105"
+									className={`object-cover transition-transform duration-700 group-hover:scale-105 ${feature.image.includes('contacts') ? 'hue-rotate-[-100deg] saturate-150 contrast-125' : ''}`}
 								/>
 							</div>
 						</motion.div>

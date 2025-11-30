@@ -3,6 +3,8 @@
 import { useAuth } from '@clerk/nextjs';
 import { Hero3D } from '@/components/home/Hero3D';
 import { Features3D } from '@/components/home/Features3D';
+import { ArrowRight, Check, Zap, Globe, Shield, BarChart3 } from 'lucide-react';
+import { Logo } from '@/components/Logo';
 import { Pricing3D } from '@/components/home/Pricing3D';
 import Link from 'next/link';
 
@@ -14,12 +16,9 @@ export default function Home() {
 			{/* Header */}
 			<header className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-md">
 				<div className="container mx-auto flex h-16 items-center justify-between px-4">
-					<div className="flex items-center gap-2 font-bold text-xl tracking-tight">
-						<div className="h-8 w-8 rounded-full bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center shadow-lg shadow-green-500/20">
-							<div className="h-4 w-4 rounded-full bg-white/20" />
-						</div>
-						<span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">INFINITY</span>
-					</div>
+					<Link href="/">
+						<Logo />
+					</Link>
 					<nav className="flex items-center gap-4">
 						{isSignedIn ? (
 							<Link

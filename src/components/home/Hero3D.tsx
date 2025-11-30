@@ -27,11 +27,13 @@ export function Hero3D({ isSignedIn }: { isSignedIn: boolean }) {
 					className="absolute inset-0 flex items-center justify-center opacity-60"
 				>
 					<div className="absolute inset-0 z-10 bg-[#4CAF50] mix-blend-color opacity-50" />
+					{/* Add orange accent overlay */}
+					<div className="absolute inset-0 z-20 bg-[#FFC107] mix-blend-overlay opacity-30" />
 					<Image
 						src="/assets/hero-3d.png"
 						alt="3D Infinity Loop"
 						fill
-						className="object-cover"
+						className="object-cover hue-rotate-[-100deg] saturate-150 contrast-125"
 						priority
 					/>
 				</motion.div>
@@ -45,7 +47,7 @@ export function Hero3D({ isSignedIn }: { isSignedIn: boolean }) {
 					transition={{ duration: 0.8, ease: "easeOut" }}
 					className="max-w-4xl"
 				>
-					<h1 className="bg-gradient-to-r from-green-400 via-blue-500 to-green-600 bg-clip-text text-6xl font-extrabold text-transparent sm:text-8xl md:text-9xl tracking-tighter filter drop-shadow-lg">
+					<h1 className="bg-gradient-to-r from-green-400 via-gray-200 to-green-600 bg-clip-text text-6xl font-extrabold text-transparent sm:text-8xl md:text-9xl tracking-tighter filter drop-shadow-lg">
 						INFINITY
 					</h1>
 					<p className="mt-6 text-xl text-gray-300 sm:text-2xl font-light tracking-wide">
@@ -65,7 +67,7 @@ export function Hero3D({ isSignedIn }: { isSignedIn: boolean }) {
 					>
 						<span className="mr-2">{isSignedIn ? 'Go to Dashboard' : 'Get Started'}</span>
 						<ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-						<div className="absolute inset-0 -z-10 bg-gradient-to-r from-green-600/50 to-blue-600/50 opacity-0 transition-opacity group-hover:opacity-100" />
+						<div className="absolute inset-0 -z-10 bg-gradient-to-r from-green-600/50 to-orange-600/50 opacity-0 transition-opacity group-hover:opacity-100" />
 					</Link>
 				</motion.div>
 			</div>

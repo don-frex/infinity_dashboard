@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Building2, Users, LayoutDashboard, History, Settings, FileText, Mail, CreditCard } from 'lucide-react';
 import { UserButton, useUser } from '@clerk/nextjs';
+import { Logo } from '@/components/Logo';
 
 const navItems = [
 	{ name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
@@ -25,10 +26,7 @@ export function Sidebar() {
 			{/* Logo Section */}
 			<div className="flex h-20 items-center px-6">
 				<Link href="/" className="flex items-center gap-3 font-bold text-xl tracking-tight">
-					<div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
-						<div className="h-4 w-4 rounded-full bg-secondary-foreground/20" />
-					</div>
-					<span className="text-foreground">INFINITY</span>
+					<Logo />
 				</Link>
 			</div>
 
