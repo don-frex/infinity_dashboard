@@ -88,15 +88,15 @@ export function ContactsTable({
 	};
 
 	return (
-		<Table>
+		<Table className="table-fixed">
 			<TableHeader>
 				<TableRow>
-					<SortableHeader label="Name" field="name" />
-					<SortableHeader label="Title" field="title" />
-					<SortableHeader label="Department" field="department" />
-					<TableHead>Email</TableHead>
-					<TableHead>Phone</TableHead>
-					<TableHead>Action</TableHead>
+					<SortableHeader label="Name" field="name" className="w-[250px]" />
+					<SortableHeader label="Title" field="title" className="w-[250px]" />
+					<SortableHeader label="Department" field="department" className="w-[250px]" />
+					<TableHead className="w-[200px]">Email</TableHead>
+					<TableHead className="w-[150px]">Phone</TableHead>
+					<TableHead className="w-[100px]">Action</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
