@@ -29,10 +29,10 @@ export function Features3D() {
 						className={`mb-32 flex flex-col items-center gap-12 lg:flex-row ${feature.align === 'right' ? 'lg:flex-row-reverse' : ''}`}
 					>
 						<motion.div
-							initial={{ opacity: 0, x: feature.align === 'left' ? -50 : 50 }}
-							whileInView={{ opacity: 1, x: 0 }}
-							viewport={{ once: true, margin: "-100px" }}
-							transition={{ duration: 0.8 }}
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, margin: "-50px" }}
+							transition={{ duration: 0.6 }}
 							className="flex-1"
 						>
 							<div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-sm group perspective-1000">
