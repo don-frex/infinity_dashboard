@@ -107,7 +107,7 @@ export async function getContacts({
 	const totalPages = Math.ceil(totalContacts / limit);
 
 	// Mask sensitive data by default, unless unlocked
-	const processedContacts = contacts.map((contact) => {
+	const processedContacts = contacts.map((contact: any) => {
 		const isUnlocked = contact.unlockedBy.length > 0;
 		return {
 			...contact,
