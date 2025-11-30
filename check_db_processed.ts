@@ -10,7 +10,7 @@ async function main() {
 		}
 	});
 
-	const processedContacts = contacts.map((contact) => ({
+	const processedContacts = contacts.map((contact: any) => ({
 		...contact,
 		name: contact.name.charAt(0) + '***',
 		email: contact.email.charAt(0) + '***',
