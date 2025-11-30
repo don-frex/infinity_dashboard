@@ -13,27 +13,25 @@ export function Hero3D({ isSignedIn }: { isSignedIn: boolean }) {
 		offset: ["start start", "end start"]
 	});
 
-	const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+	const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 	const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-	const scale = useTransform(scrollYProgress, [0, 1], [1, 1]);
+	const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
 
 	return (
 		<section ref={ref} className="relative min-h-screen overflow-hidden bg-black text-white">
 			{/* Background Elements */}
 			<div className="absolute inset-0 z-0">
-				<div className="absolute inset-0 bg-gradient-to-b from-green-900/20 to-black/90" />
+				<div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black" />
 				<motion.div
 					style={{ y, scale, opacity }}
-					className="absolute inset-0 flex items-center justify-center opacity-60"
+					className="absolute inset-0 flex items-center justify-center"
 				>
-					<div className="absolute inset-0 z-10 bg-[#4CAF50] mix-blend-color opacity-50" />
-					{/* Add orange accent overlay */}
-					<div className="absolute inset-0 z-20 bg-[#FFC107] mix-blend-overlay opacity-30" />
+					<div className="absolute inset-0 z-10 bg-black/60" />
 					<Image
 						src="/assets/hero-3d.png"
 						alt="3D Infinity Loop"
 						fill
-						className="object-cover object-center hue-rotate-[-100deg] saturate-150 contrast-125"
+						className="object-cover opacity-30 grayscale contrast-125"
 						priority
 					/>
 				</motion.div>
