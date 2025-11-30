@@ -13,9 +13,9 @@ export function Hero3D({ isSignedIn }: { isSignedIn: boolean }) {
 		offset: ["start start", "end start"]
 	});
 
-	const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+	const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 	const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-	const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
+	const scale = useTransform(scrollYProgress, [0, 1], [1, 1]);
 
 	return (
 		<section ref={ref} className="relative min-h-screen overflow-hidden bg-black text-white">
@@ -33,7 +33,7 @@ export function Hero3D({ isSignedIn }: { isSignedIn: boolean }) {
 						src="/assets/hero-3d.png"
 						alt="3D Infinity Loop"
 						fill
-						className="object-cover hue-rotate-[-100deg] saturate-150 contrast-125"
+						className="object-cover object-center hue-rotate-[-100deg] saturate-150 contrast-125"
 						priority
 					/>
 				</motion.div>
