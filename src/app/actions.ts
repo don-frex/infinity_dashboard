@@ -266,37 +266,39 @@ export async function revealContact(contactId: string) {
 	}
 
 	// Increment usage and unlock contact
-	// NOTE: Disabled for Vercel demo as SQLite is read-only in serverless functions
-	/*
-	await prisma.$transaction([
-		prisma.userUsage.upsert({
-			where: {
-				userId_date: {
+	// Increment usage and unlock contact
+	try {
+		await prisma.$transaction([
+			prisma.userUsage.upsert({
+				where: {
+					userId_date: {
+						userId,
+						date: today,
+					},
+				},
+				update: {
+					count: {
+						increment: 1,
+					},
+				},
+				create: {
 					userId,
 					date: today,
+					count: 1,
 				},
-			},
-			update: {
-				count: {
-					increment: 1,
+			}),
+			prisma.unlockedContact.create({
+				data: {
+					userId,
+					contactId,
 				},
-			},
-			create: {
-				userId,
-				date: today,
-				count: 1,
-			},
-		}),
-		prisma.unlockedContact.create({
-			data: {
-				userId,
-				contactId,
-			},
-		}),
-	]);
-	*/
+			}),
+		]);
+	} catch (error) {
+		console.log('Database write failed (expected on Vercel demo):', error);
+		// Fallback for demo: just return the contact without persisting
+	}
 
-	// Simulate successful unlock for demo purposes
 	return { contact };
 }
 
