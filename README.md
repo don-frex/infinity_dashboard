@@ -1,8 +1,10 @@
-# Agency & Contact Dashboard
+# Infinity Dashboard
 
-A dashboard application built with Next.js 16, Clerk Authentication, and Prisma.
+A modern, immersive dashboard application built with Next.js 16, Clerk Authentication, and Prisma, featuring 3D visualizations.
 
 ## Features
+- **Immersive 3D Experience**: Interactive 3D elements using Framer Motion and Three.js concepts.
+- **Modern UI/UX**: Sleek, dark-themed interface with glassmorphism and dynamic animations.
 - **Authentication**: Secure signup/login via Clerk.
 - **Agencies**: View a list of agencies (populated from CSV).
 - **Contacts**: View employee contacts with a daily usage limit.
@@ -13,6 +15,7 @@ A dashboard application built with Next.js 16, Clerk Authentication, and Prisma.
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS + Shadcn/UI
+- **Animation**: Framer Motion
 - **Auth**: Clerk
 - **Database**: SQLite (Dev) / Prisma ORM
 
