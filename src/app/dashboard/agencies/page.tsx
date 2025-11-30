@@ -69,7 +69,7 @@ export default async function AgenciesPage({
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{agencies.map((agency) => (
+						{agencies.map((agency: any) => (
 							<TableRow key={agency.id}>
 								<TableCell className="font-medium">{agency.name}</TableCell>
 								<TableCell>{agency.state}</TableCell>
