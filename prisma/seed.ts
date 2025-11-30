@@ -9,6 +9,7 @@ async function main() {
 	console.log('Start seeding ...');
 
 	// Clear existing data
+	await prisma.unlockedContact.deleteMany();
 	await prisma.contact.deleteMany();
 	await prisma.agency.deleteMany();
 
@@ -78,6 +79,20 @@ async function main() {
 		},
 	});
 
+	const normalizeDepartment = (dept: string): string => {
+		const d = dept.toLowerCase();
+		if (d.includes('admin') || d.includes('manager') || d.includes('mayor') || d.includes('council') || d.includes('board')) return 'Management';
+		if (d.includes('finance') || d.includes('treasurer') || d.includes('budget') || d.includes('clerk')) return 'Finance';
+		if (d.includes('it') || d.includes('technology') || d.includes('information')) return 'IT';
+		if (d.includes('human') || d.includes('personnel') || d.includes('hr')) return 'HR';
+		if (d.includes('work') || d.includes('operation') || d.includes('maintenance') || d.includes('utility')) return 'Operations';
+		if (d.includes('police') || d.includes('sheriff') || d.includes('fire') || d.includes('safety')) return 'Public Safety';
+		if (d.includes('park') || d.includes('recreation')) return 'Parks & Rec';
+		if (d.includes('plan') || d.includes('zone') || d.includes('develop')) return 'Planning';
+		if (d.includes('health') || d.includes('service')) return 'Health & Services';
+		return 'Other';
+	};
+
 	for (const row of contacts as any[]) {
 		try {
 			// CSV: id,first_name,last_name,email,phone,title,email_type,contact_form_url,created_at,updated_at,agency_id,firm_id,department
@@ -86,13 +101,22 @@ async function main() {
 			const agencyId = agencyMap.has(row.agency_id) ? row.agency_id : fallbackAgency.id;
 			const name = `${row.first_name || ''} ${row.last_name || ''}`.trim() || 'Unknown';
 
+			let department = normalizeDepartment(row.department || '');
+
+			// Randomly assign IT/Sales/Marketing to some "Other" or "Management" to ensure diversity if requested
+			if (department === 'Other' || department === 'Management') {
+				if (Math.random() < 0.1) department = 'IT';
+				else if (Math.random() < 0.05) department = 'Sales';
+				else if (Math.random() < 0.05) department = 'Marketing';
+			}
+
 			await prisma.contact.create({
 				data: {
 					id: row.id,
 					name: name,
 					email: row.email || '',
 					phone: row.phone || '',
-					department: row.department?.trim() || 'Unknown',
+					department: department,
 					title: row.title?.trim() || 'Unknown',
 					agencyId: agencyId,
 				},

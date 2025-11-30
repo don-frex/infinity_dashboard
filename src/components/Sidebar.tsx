@@ -3,42 +3,99 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Building2, Users, LayoutDashboard } from 'lucide-react';
+import { Building2, Users, LayoutDashboard, History, Settings, FileText, Mail } from 'lucide-react';
+import { UserButton, useUser } from '@clerk/nextjs';
 
 const navItems = [
-	{ name: 'Agencies', href: '/dashboard/agencies', icon: Building2 },
-	{ name: 'Contacts', href: '/dashboard/contacts', icon: Users },
+	{ name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+	{ name: 'Agencies', href: '/dashboard/agencies', icon: Building2 }, // Mapping to "Invoices" or similar from prototype
+	{ name: 'Contacts', href: '/dashboard/contacts', icon: Users }, // Mapping to "Reports" or similar
+	{ name: 'Recently Viewed', href: '/dashboard/recent', icon: History },
+	// Adding some placeholder items to match prototype density if needed, but sticking to real routes is better.
+	// Let's add "Settings" as it's common.
+	// { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 
 export function Sidebar() {
 	const pathname = usePathname();
+	const { user } = useUser();
 
 	return (
-		<div className="flex h-full w-64 flex-col border-r bg-muted/10">
-			<div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-				<Link href="/" className="flex items-center gap-2 font-semibold">
-					<LayoutDashboard className="h-6 w-6" />
-					<span className="">Dashboard</span>
+		<div className="flex h-full w-64 flex-col border-r bg-sidebar text-sidebar-foreground">
+			{/* Logo Section */}
+			<div className="flex h-20 items-center px-6">
+				<Link href="/" className="flex items-center gap-3 font-bold text-xl tracking-tight">
+					<div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
+						<div className="h-4 w-4 rounded-full bg-secondary-foreground/20" />
+					</div>
+					<span className="text-foreground">INFINITY</span>
 				</Link>
 			</div>
-			<div className="flex-1">
-				<nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-					{navItems.map((item) => (
-						<Link
-							key={item.href}
-							href={item.href}
-							className={cn(
-								'flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary',
-								pathname === item.href
-									? 'bg-muted text-primary'
-									: 'text-muted-foreground'
-							)}
-						>
-							<item.icon className="h-4 w-4" />
-							{item.name}
-						</Link>
-					))}
+
+			{/* Navigation Section */}
+			<div className="flex-1 px-4 py-4">
+				<div className="mb-4 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider hidden">
+					Menu
+				</div>
+				<nav className="space-y-1">
+					{navItems.map((item) => {
+						const isActive = pathname === item.href;
+						return (
+							<Link
+								key={item.href}
+								href={item.href}
+								className={cn(
+									'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all',
+									isActive
+										? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm'
+										: 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground'
+								)}
+							>
+								<item.icon className={cn("h-5 w-5", isActive ? "text-sidebar-accent-foreground" : "text-muted-foreground")} />
+								{item.name}
+							</Link>
+						);
+					})}
 				</nav>
+
+				{/* Secondary Nav (Visual only to match prototype density) */}
+				<div className="mt-8">
+					<nav className="space-y-1">
+						<div className={cn(
+							'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground cursor-not-allowed opacity-70'
+						)}>
+							<FileText className="h-5 w-5 text-muted-foreground" />
+							Invoices
+						</div>
+						<div className={cn(
+							'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground cursor-not-allowed opacity-70'
+						)}>
+							<Mail className="h-5 w-5 text-muted-foreground" />
+							Inbox
+						</div>
+						<div className={cn(
+							'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground cursor-not-allowed opacity-70'
+						)}>
+							<Settings className="h-5 w-5 text-muted-foreground" />
+							Settings
+						</div>
+					</nav>
+				</div>
+			</div>
+
+			{/* User Profile Section */}
+			<div className="border-t p-4">
+				<div className="flex items-center gap-3 rounded-lg bg-sidebar-accent/30 p-3">
+					<UserButton afterSignOutUrl="/" />
+					<div className="flex flex-col overflow-hidden">
+						<span className="truncate text-sm font-medium text-foreground">
+							{user?.fullName || 'User'}
+						</span>
+						<span className="truncate text-xs text-muted-foreground">
+							Manager
+						</span>
+					</div>
+				</div>
 			</div>
 		</div>
 	);

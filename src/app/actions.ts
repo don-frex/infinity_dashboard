@@ -121,6 +121,114 @@ export async function getContacts({
 	return { contacts: processedContacts, totalPages };
 }
 
+export async function getRecentContacts({
+	page = 1,
+	limit = 50,
+}: {
+	page?: number;
+	limit?: number;
+}) {
+	const { userId } = await auth();
+	if (!userId) {
+		return { contacts: [], totalPages: 0 };
+	}
+
+	const skip = (page - 1) * limit;
+
+	const [unlockedContacts, total] = await Promise.all([
+		prisma.unlockedContact.findMany({
+			where: { userId },
+			include: {
+				contact: {
+					include: {
+						agency: true,
+					},
+				},
+			},
+			orderBy: { createdAt: 'desc' },
+			skip,
+			take: limit,
+		}),
+		prisma.unlockedContact.count({ where: { userId } }),
+	]);
+
+	const contacts = unlockedContacts.map((uc) => uc.contact);
+
+	return { contacts, totalPages: Math.ceil(total / limit) };
+}
+
+export async function getDashboardStats() {
+	const { userId } = await auth();
+	if (!userId) {
+		throw new Error('Unauthorized');
+	}
+
+	const [
+		totalAgencies,
+		totalContacts,
+		departmentData,
+		topAgencies,
+		mapDataRaw,
+	] = await Promise.all([
+		prisma.agency.count(),
+		prisma.contact.count(),
+		prisma.contact.groupBy({
+			by: ['department'],
+			_count: {
+				department: true,
+			},
+		}),
+		prisma.agency.findMany({
+			where: {
+				name: { not: 'Unassigned Agency' },
+			},
+			include: {
+				_count: {
+					select: { contacts: true },
+				},
+			},
+			orderBy: {
+				contacts: {
+					_count: 'desc',
+				},
+			},
+			take: 7,
+		}),
+		prisma.agency.groupBy({
+			by: ['state'],
+			_count: {
+				state: true,
+			},
+		}),
+	]);
+
+	const avgEmployees = totalAgencies > 0 ? Math.round(totalContacts / totalAgencies) : 0;
+
+	const formattedDepartmentData = departmentData.map((d) => ({
+		name: d.department || 'Unknown',
+		value: d._count.department,
+	}));
+
+	const formattedTopAgencies = topAgencies.map((a) => ({
+		name: a.name,
+		employees: a._count.contacts,
+	}));
+
+	const formattedMapData = mapDataRaw.map((m) => ({
+		name: m.state,
+		value: m._count.state,
+	}));
+
+	return {
+		totalAgencies,
+		totalContacts,
+		avgEmployees,
+		departmentData: formattedDepartmentData,
+		topAgenciesData: formattedTopAgencies,
+		mapData: formattedMapData,
+	};
+}
+
 export async function revealContact(contactId: string) {
 	const { userId } = await auth();
 	if (!userId) throw new Error('Unauthorized');

@@ -31,11 +31,13 @@ export function ContactsTable({
 	sortBy,
 	sortOrder,
 	query,
+	baseUrl = '/dashboard/contacts',
 }: {
 	contacts: Contact[];
 	sortBy: string;
 	sortOrder: 'asc' | 'desc';
 	query: string;
+	baseUrl?: string;
 }) {
 	const [contacts, setContacts] = useState(initialContacts);
 
@@ -75,7 +77,7 @@ export function ContactsTable({
 		return (
 			<TableHead className={className}>
 				<Link
-					href={`/dashboard/contacts?page=1&sortBy=${field}&sortOrder=${nextOrder}&query=${query}`}
+					href={`${baseUrl}?page=1&sortBy=${field}&sortOrder=${nextOrder}&query=${query}`}
 					className="flex items-center gap-1 hover:text-foreground"
 				>
 					{label}
