@@ -25,12 +25,12 @@ export default async function AgenciesPage({
 
 	const { agencies, totalPages } = await getAgencies({ page, limit, sortBy, sortOrder });
 
-	const SortableHeader = ({ label, field }: { label: string; field: string }) => {
+	const SortableHeader = ({ label, field, className }: { label: string; field: string; className?: string }) => {
 		const isActive = sortBy === field;
 		const nextOrder = isActive && sortOrder === 'asc' ? 'desc' : 'asc';
 
 		return (
-			<TableHead>
+			<TableHead className={className}>
 				<Link
 					href={`/dashboard/agencies?page=1&sortBy=${field}&sortOrder=${nextOrder}`}
 					className="flex items-center gap-1 hover:text-foreground"
@@ -55,12 +55,12 @@ export default async function AgenciesPage({
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<SortableHeader label="Name" field="name" />
-							<SortableHeader label="State" field="state" />
-							<SortableHeader label="State Code" field="stateCode" />
-							<SortableHeader label="Type" field="type" />
-							<SortableHeader label="Population" field="population" />
-							<TableHead>Website</TableHead>
+							<SortableHeader label="Name" field="name" className="w-[300px]" />
+							<SortableHeader label="State" field="state" className="w-[150px]" />
+							<SortableHeader label="State Code" field="stateCode" className="w-[120px]" />
+							<SortableHeader label="Type" field="type" className="w-[200px]" />
+							<SortableHeader label="Population" field="population" className="w-[150px]" />
+							<TableHead className="w-[100px]">Website</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
