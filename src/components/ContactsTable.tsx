@@ -56,11 +56,17 @@ export function ContactsTable({
 		if (useLocalStorageForRecent) {
 			// For "Recent" page: use localStorage data if server returns empty/masked data
 			const stored = localStorage.getItem('revealedContacts');
+			console.log('Recent View - Loading from localStorage:', stored ? 'Found data' : 'Empty');
 			if (stored) {
-				const parsed = JSON.parse(stored);
-				const recentContacts = Object.values(parsed) as Contact[];
-				// Sort by most recently added (mock logic, relying on insertion order or just listing them)
-				setContacts(recentContacts.reverse());
+				try {
+					const parsed = JSON.parse(stored);
+					const recentContacts = Object.values(parsed) as Contact[];
+					console.log('Recent View - Parsed contacts:', recentContacts.length);
+					// Sort by most recently added (mock logic, relying on insertion order or just listing them)
+					setContacts(recentContacts.reverse());
+				} catch (e) {
+					console.error('Recent View - Error parsing localStorage:', e);
+				}
 			}
 		} else {
 			// Normal behavior: Merge server contacts with locally revealed contacts
