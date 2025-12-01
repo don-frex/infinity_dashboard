@@ -57,31 +57,3 @@ graph TD
     UsageCheck -->|No| BlockAccess[Return Error]
     BlockAccess -->|Show Paywall| ContactsPage
 ```
-
-### Vercel Demo Architecture (Read-Only DB)
-Since the SQLite database is read-only in the Vercel serverless environment, the application uses a hybrid approach for the demo:
-
-1.  **Credit Tracking**:
-    - **Primary**: Database (`UserUsage` table).
-    - **Fallback**: If DB write fails, a `usage_count` **cookie** is used to track credits for the session.
-
-2.  **Contact Persistence**:
-    - **Primary**: Database (`UnlockedContact` table).
-    - **Fallback**: If DB write fails, revealed contacts are saved to **localStorage** on the client.
-    - **Rehydration**: On page load, `ContactsTable` merges server data with `localStorage` to ensure unlocked contacts remain visible.
-
-```mermaid
-graph TD
-    User[User] -->|Reveal Contact| ServerAction[revealContact]
-    
-    ServerAction -->|Try Write| DB[(SQLite DB)]
-    
-    DB -- Success --> Return[Return Data]
-    DB -- Fail (Read-Only) --> Cookie[Set Cookie]
-    
-    Return --> Client[Client Component]
-    Cookie --> Client
-    
-    Client -->|Save| LocalStorage[localStorage]
-    Client -->|Update UI| UI[Update View]
-```
