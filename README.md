@@ -2,7 +2,7 @@
 
 A modern, immersive dashboard application built with Next.js 16, Clerk Authentication, and Prisma, featuring 3D visualizations.
 
-## Features
+## Features 
 - **Immersive 3D Experience**: Interactive 3D elements using Framer Motion and Three.js concepts.
 - **Modern UI/UX**: Sleek, dark-themed interface with glassmorphism and dynamic animations.
 - **Authentication**: Secure signup/login via Clerk.
