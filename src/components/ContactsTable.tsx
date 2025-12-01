@@ -32,22 +32,41 @@ export function ContactsTable({
 	sortOrder,
 	query,
 	baseUrl = '/dashboard/contacts',
+	useLocalStorageForRecent,
 }: {
 	contacts: Contact[];
 	sortBy: string;
 	sortOrder: 'asc' | 'desc';
 	query: string;
 	baseUrl?: string;
+	useLocalStorageForRecent?: boolean;
 }) {
 	const [contacts, setContacts] = useState(initialContacts);
 	const [revealedContacts, setRevealedContacts] = useState<Record<string, Contact>>({});
 
 	useEffect(() => {
-		// Merge server contacts with locally revealed contacts
-		// This ensures that if the server returns masked data (due to read-only DB),
-		// we still show the unmasked data we already fetched.
-		setContacts(initialContacts.map(c => revealedContacts[c.id] || c));
-	}, [initialContacts, revealedContacts]);
+		// Load revealed contacts from localStorage on mount
+		const stored = localStorage.getItem('revealedContacts');
+		if (stored) {
+			setRevealedContacts(JSON.parse(stored));
+		}
+	}, []);
+
+	useEffect(() => {
+		if (useLocalStorageForRecent) {
+			// For "Recent" page: use localStorage data if server returns empty/masked data
+			const stored = localStorage.getItem('revealedContacts');
+			if (stored) {
+				const parsed = JSON.parse(stored);
+				const recentContacts = Object.values(parsed) as Contact[];
+				// Sort by most recently added (mock logic, relying on insertion order or just listing them)
+				setContacts(recentContacts.reverse());
+			}
+		} else {
+			// Normal behavior: Merge server contacts with locally revealed contacts
+			setContacts(initialContacts.map(c => revealedContacts[c.id] || c));
+		}
+	}, [initialContacts, revealedContacts, useLocalStorageForRecent]);
 
 	const handleView = async (id: string) => {
 		try {
@@ -61,7 +80,12 @@ export function ContactsTable({
 
 			if ('contact' in result && result.contact) {
 				const newContact = { ...result.contact, agency: contacts.find(c => c.id === id)?.agency || { name: 'Unknown' } };
-				setRevealedContacts(prev => ({ ...prev, [id]: newContact }));
+
+				setRevealedContacts(prev => {
+					const updated = { ...prev, [id]: newContact };
+					localStorage.setItem('revealedContacts', JSON.stringify(updated));
+					return updated;
+				});
 
 				// Dispatch event to update header credits
 				window.dispatchEvent(new Event('credit-update'));

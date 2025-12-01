@@ -27,6 +27,7 @@ export default async function RecentPage({
 					sortOrder="desc" // Dummy
 					query="" // Dummy
 					baseUrl="/dashboard/recent"
+					useLocalStorageForRecent={true}
 				/>
 				<div className="flex items-center justify-end space-x-2 py-4">
 					<Button
