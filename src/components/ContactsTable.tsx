@@ -40,10 +40,14 @@ export function ContactsTable({
 	baseUrl?: string;
 }) {
 	const [contacts, setContacts] = useState(initialContacts);
+	const [revealedContacts, setRevealedContacts] = useState<Record<string, Contact>>({});
 
 	useEffect(() => {
-		setContacts(initialContacts);
-	}, [initialContacts]);
+		// Merge server contacts with locally revealed contacts
+		// This ensures that if the server returns masked data (due to read-only DB),
+		// we still show the unmasked data we already fetched.
+		setContacts(initialContacts.map(c => revealedContacts[c.id] || c));
+	}, [initialContacts, revealedContacts]);
 
 	const handleView = async (id: string) => {
 		try {
@@ -56,9 +60,9 @@ export function ContactsTable({
 			}
 
 			if ('contact' in result && result.contact) {
-				setContacts((prev) =>
-					prev.map((c) => (c.id === id ? { ...c, ...result.contact, agency: c.agency } : c))
-				);
+				const newContact = { ...result.contact, agency: contacts.find(c => c.id === id)?.agency || { name: 'Unknown' } };
+				setRevealedContacts(prev => ({ ...prev, [id]: newContact }));
+
 				// Dispatch event to update header credits
 				window.dispatchEvent(new Event('credit-update'));
 			}
