@@ -2,6 +2,7 @@
 
 import prisma from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
+import { cookies } from 'next/headers';
 
 export async function getAgencies({
 	page = 1,
@@ -296,7 +297,10 @@ export async function revealContact(contactId: string) {
 		]);
 	} catch (error) {
 		console.log('Database write failed (expected on Vercel demo):', error);
-		// Fallback for demo: just return the contact without persisting
+		// Fallback for demo: use cookies to track usage
+		const cookieStore = await cookies();
+		const currentCount = parseInt(cookieStore.get('usage_count')?.value || '0', 10);
+		cookieStore.set('usage_count', (currentCount + 1).toString(), { path: '/' });
 	}
 
 	return { contact };
@@ -309,14 +313,24 @@ export async function getUserUsage() {
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
 
-	const usage = await prisma.userUsage.findUnique({
-		where: {
-			userId_date: {
-				userId,
-				date: today,
+	let dbCount = 0;
+	try {
+		const usage = await prisma.userUsage.findUnique({
+			where: {
+				userId_date: {
+					userId,
+					date: today,
+				},
 			},
-		},
-	});
+		});
+		dbCount = usage?.count || 0;
+	} catch (error) {
+		console.log('Database read failed (possible on Vercel demo):', error);
+	}
 
-	return { count: usage?.count || 0 };
+	// Check cookie fallback
+	const cookieStore = await cookies();
+	const cookieCount = parseInt(cookieStore.get('usage_count')?.value || '0', 10);
+
+	return { count: Math.max(dbCount, cookieCount) };
 }
