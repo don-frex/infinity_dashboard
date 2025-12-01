@@ -1,13 +1,36 @@
-'use client';
-
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, User } from 'lucide-react';
 
 export function RecentlyViewed({
-	contacts,
+	contacts: initialContacts,
 }: {
 	contacts: any[];
 }) {
+	const [contacts, setContacts] = useState(initialContacts);
+
+	useEffect(() => {
+		// Load revealed contacts from localStorage to supplement server data
+		// This is needed for Vercel demo where DB is read-only
+		const stored = localStorage.getItem('revealedContacts');
+		if (stored) {
+			try {
+				const parsed = JSON.parse(stored);
+				const localContacts = Object.values(parsed);
+
+				// If server returned no contacts (likely due to read-only DB), use local ones
+				if (initialContacts.length === 0 && localContacts.length > 0) {
+					// Sort by most recently added (mock logic) and take top 5
+					setContacts(localContacts.reverse().slice(0, 5));
+				} else {
+					setContacts(initialContacts);
+				}
+			} catch (e) {
+				console.error('Error parsing local contacts:', e);
+			}
+		}
+	}, [initialContacts]);
+
 	return (
 		<div className="rounded-xl bg-white p-6 shadow-sm h-full flex flex-col">
 			<div className="mb-6 flex items-center justify-between">
@@ -22,7 +45,7 @@ export function RecentlyViewed({
 						No recently viewed contacts.
 					</div>
 				) : (
-					contacts.map((contact) => (
+					contacts.map((contact: any) => (
 						<div key={contact.id} className="flex items-center gap-4 border-b pb-4 last:border-0 last:pb-0">
 							<div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
 								<User className="h-5 w-5 text-gray-500" />
