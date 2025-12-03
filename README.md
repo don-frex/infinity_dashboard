@@ -1,59 +1,123 @@
 # Infinity Dashboard
 
-A modern, immersive dashboard application built with Next.js 16, Clerk Authentication, and Prisma, featuring 3D visualizations.
+A cutting-edge, immersive dashboard application built with **Next.js 16**, **Clerk Authentication**, and **Prisma**. This project demonstrates a modern approach to web development, featuring 3D visualizations, interactive data mapping, and a sleek, dark-themed UI.
 
-## Features 
-- **Immersive 3D Experience**: Interactive 3D elements using Framer Motion and Three.js concepts.
-- **Modern UI/UX**: Sleek, dark-themed interface with glassmorphism and dynamic animations.
-- **Authentication**: Secure signup/login via Clerk.
-- **Agencies**: View a list of agencies (populated from CSV).
-- **Contacts**: View employee contacts with a daily usage limit.
-- **Usage Limit**: Users are limited to viewing 50 contacts per day.
-- **Paywall**: "Upgrade" prompt when the limit is reached.
+## 🚀 Features
 
-## Tech Stack
-- **Framework**: Next.js 16 (App Router)
+- **Immersive 3D Experience**: Interactive 3D elements and animations powered by **Framer Motion**.
+- **Modern UI/UX**: A premium, dark-themed interface utilizing **Glassmorphism**, dynamic gradients, and smooth transitions.
+- **Secure Authentication**: Robust user management and authentication provided by **Clerk**.
+- **Data Visualization**:
+  - Interactive **Agency Map** using `react-simple-maps`.
+  - Dynamic charts (Bar, Pie, Area) powered by **Recharts**.
+- **Agency & Contact Management**: Browse agencies, view details, and unlock contact information.
+- **Usage Tracking**: Daily limit system for viewing contacts, tracked via a dedicated database model.
+- **Responsive Design**: Fully responsive layout optimized for all device sizes.
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Library**: [React 19](https://react.dev/)
+- **Styling**: 
+  - [Tailwind CSS v4](https://tailwindcss.com/)
+  - `clsx` & `tailwind-merge` for dynamic class management
+  - `class-variance-authority` for component variants
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Maps**: `react-simple-maps` & `d3-scale`
+- **Charts**: [Recharts](https://recharts.org/)
+
+### Backend & Database
+- **Runtime**: Node.js
+- **Database**: SQLite (Development)
+- **ORM**: [Prisma](https://www.prisma.io/)
+- **Authentication**: [Clerk](https://clerk.com/)
+
+### Tools & Utilities
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS + Shadcn/UI
-- **Animation**: Framer Motion
-- **Auth**: Clerk
-- **Database**: SQLite (Dev) / Prisma ORM
+- **Linting**: ESLint
+- **Data Seeding**: Custom seed scripts with `csv-parse`
 
-## Setup
-1.  Clone the repository.
-2.  Install dependencies: `npm install`
-3.  Set up environment variables in `.env`:
-    ```env
-    DATABASE_URL="file:./dev.db"
-    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
-    CLERK_SECRET_KEY=...
-    NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=/dashboard/agencies
-    NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=/dashboard/agencies
-    ```
-4.  Run migrations: `npx prisma migrate dev`
-5.  Seed the database: `npx prisma db seed`
-6.  Start the server: `npm run dev`
+## 📂 Project Structure
 
-## System Design
-```mermaid
-graph TD
-    User[User] -->|Auth| Clerk[Clerk Authentication]
-    Clerk -->|Redirect| Dashboard[Dashboard]
-    
-    Dashboard -->|View Agencies| AgenciesPage[Agencies Page]
-    Dashboard -->|View Contacts| ContactsPage[Contacts Page]
-    
-    AgenciesPage -->|Fetch Data| ServerAction1[getAgencies]
-    ServerAction1 -->|Query| DB[(Database)]
-    
-    ContactsPage -->|Fetch Data| ServerAction2[getContacts]
-    ServerAction2 -->|Check Usage| UsageCheck{Usage < 50?}
-    
-    UsageCheck -->|Yes| FetchContacts[Fetch Contacts]
-    FetchContacts -->|Query| DB
-    FetchContacts -->|Increment Count| DB
-    FetchContacts -->|Return Data| ContactsPage
-    
-    UsageCheck -->|No| BlockAccess[Return Error]
-    BlockAccess -->|Show Paywall| ContactsPage
 ```
+├── src/
+│   ├── app/              # Next.js App Router pages and API routes
+│   ├── components/       # Reusable React components
+│   │   ├── dashboard/    # Dashboard-specific widgets (Charts, Maps)
+│   │   ├── home/         # Landing page components (Hero3D, Features)
+│   │   └── ui/           # Generic UI components (Buttons, Cards, Inputs)
+│   ├── lib/              # Utility functions and shared logic
+│   ├── types/            # TypeScript type definitions
+│   └── middleware.ts     # Clerk authentication middleware
+├── prisma/
+│   ├── schema.prisma     # Database schema definition
+│   ├── seed.ts           # Database seeding script
+│   └── dev.db            # SQLite database file
+├── public/               # Static assets
+└── package.json          # Project dependencies and scripts
+```
+
+## ⚡ Getting Started
+
+### Prerequisites
+- Node.js (v18+ recommended)
+- npm or yarn
+
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/yourusername/infinity_dashboard.git
+    cd infinity_dashboard
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup:**
+    Create a `.env` file in the root directory and add the following variables:
+    ```env
+    # Clerk Authentication
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+    CLERK_SECRET_KEY=sk_test_...
+
+    # Database
+    DATABASE_URL="file:./prisma/dev.db"
+    ```
+
+4.  **Database Setup:**
+    Initialize the database and generate the Prisma client:
+    ```bash
+    npx prisma generate
+    npx prisma db push
+    ```
+
+5.  **Seed the Database (Optional):**
+    Populate the database with initial data:
+    ```bash
+    npm run prisma:seed
+    ```
+    *(Note: Ensure you have the necessary CSV files if the seed script relies on them)*
+
+6.  **Run the Development Server:**
+    ```bash
+    npm run dev
+    ```
+
+    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## 📜 Scripts
+
+- `npm run dev`: Starts the development server.
+- `npm run build`: Builds the application for production.
+- `npm run start`: Starts the production server.
+- `npm run lint`: Runs ESLint to check for code quality issues.
+- `npx prisma studio`: Opens a visual editor for your database.
+
+## 🔒 License
+
+This project is licensed under the MIT License.
